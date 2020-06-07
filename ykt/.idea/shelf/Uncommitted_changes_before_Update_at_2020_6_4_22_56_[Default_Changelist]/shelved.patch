@@ -1,0 +1,130 @@
+Index: src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server:\r\n  port: 8080\r\n  tomcat:\r\n    max-http-form-post-size: 20MB\r\n\r\nspring:\r\n  datasource:\r\n    url: jdbc:mysql://localhost:3306/onecard?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8\r\n    username: root\r\n    password: root\r\n    driver-class-name: com.mysql.jdbc.Driver\r\n  redis:\r\n    database: 0\r\n    host: 127.0.0.1\r\n    port: 6379\r\n    password: 123456\r\n    timeout: 5s\r\n    lettuce:\r\n      pool:\r\n        min-idle: 2\r\n        max-active: 8\r\n        max-idle: 4\r\n\r\nmybatis:\r\n  mapper-locations: classpath:mapper/**/*.xml\r\n  configuration:\r\n    map-underscore-to-camel-case: true\r\n    aggressive-lazy-loading: false\r\n    lazy-loading-enabled: true\r\n    jdbc-type-for-null: null\r\n    cache-enabled: true\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/resources/application.yml	(revision 4d09ebac1568c9450d7400f16f808ce9ce8917bb)
++++ src/main/resources/application.yml	(date 1591274573168)
+@@ -7,7 +7,7 @@
+   datasource:
+     url: jdbc:mysql://localhost:3306/onecard?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+     username: root
+-    password: root
++    password: 123456
+     driver-class-name: com.mysql.jdbc.Driver
+   redis:
+     database: 0
+Index: src/main/resources/mybatis-generator/generatorConfig.xml
+===================================================================
+--- src/main/resources/mybatis-generator/generatorConfig.xml	(revision 4d09ebac1568c9450d7400f16f808ce9ce8917bb)
++++ src/main/resources/mybatis-generator/generatorConfig.xml	(revision 4d09ebac1568c9450d7400f16f808ce9ce8917bb)
+@@ -1,73 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE generatorConfiguration
+-        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+-        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+-<!-- 配置生成器 -->
+-<generatorConfiguration>
+-    <!--执行generator插件生成文件的命令： call mvn mybatis-generator:generate -e -->
+-    <!-- 引入配置文件 -->
+-    <properties resource="mybatis-generator/mybatisGeneratorinit.properties"/>
+-    <!--classPathEntry:数据库的JDBC驱动,换成你自己的驱动位置 可选 -->
+-    <!--<classPathEntry location="E:\mybatis\mysql-connector-java-5.1.24-bin.jar" /> -->
+-
+-    <!-- 一个数据库一个context -->
+-    <!--defaultModelType="flat" 大数据字段，不分表 -->
+-    <context id="MysqlTables" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+-        <!-- 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
+-        一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖 -->
+-        <property name="autoDelimitKeywords" value="true" />
+-        <!-- 生成的Java文件的编码 -->
+-        <property name="javaFileEncoding" value="utf-8" />
+-        <!-- beginningDelimiter和endingDelimiter：指明数据库的用于标记数据库对象名的符号，比如ORACLE就是双引号，MYSQL默认是`反引号； -->
+-        <property name="beginningDelimiter" value="`" />
+-        <property name="endingDelimiter" value="`" />
+-
+-        <!-- 格式化java代码 -->
+-        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+-        <!-- 格式化XML代码 -->
+-        <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
+-        <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+-
+-        <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+-
+-        <!-- 注释 -->
+-        <commentGenerator >
+-            <property name="suppressAllComments" value="false"/><!-- 是否取消注释 -->
+-            <property name="suppressDate" value="true" /> <!-- 是否生成注释代时间戳-->
+-        </commentGenerator>
+-
+-        <!-- jdbc连接 -->
+-        <jdbcConnection driverClass="${jdbc_driver}" connectionURL="${jdbc_url}" userId="${jdbc_user}" password="${jdbc_password}" />
+-        <!-- 类型转换 -->
+-        <javaTypeResolver>
+-            <!-- 是否使用bigDecimal， false可自动转化以下类型（Long, Integer, Short, etc.） -->
+-            <property name="forceBigDecimals" value="false"/>
+-        </javaTypeResolver>
+-
+-        <!-- 生成实体类地址 -->
+-        <javaModelGenerator targetPackage="dd.springboot.demo.models" targetProject="${models}" >
+-            <property name="enableSubPackages" value="false"/>
+-            <property name="trimStrings" value="true"/>
+-        </javaModelGenerator>
+-        <!-- 生成mapxml文件 -->
+-        <sqlMapGenerator targetPackage="mapper" targetProject="${resources}" >
+-            <property name="enableSubPackages" value="false" />
+-        </sqlMapGenerator>
+-        <!-- 生成mapxml对应client，也就是接口dao -->
+-        <javaClientGenerator targetPackage="dd.springboot.demo.dao" targetProject="${dao}" type="XMLMAPPER" >
+-            <property name="enableSubPackages" value="true" />
+-        </javaClientGenerator>
+-        <!-- table可以有多个,每个数据库中的表都可以写一个table，tableName表示要匹配的数据库表,也可以在tableName属性中通过使用%通配符来匹配所有数据库表,只有匹配的表才会自动生成文件 -->
+-        <!--如果想生成一个表则tableName="table_name"-->
+-        <table tableName="%"
+-               enableCountByExample="true"
+-               enableUpdateByExample="true"
+-               enableDeleteByExample="true"
+-               enableSelectByExample="true"
+-               selectByExampleQueryId="true">
+-            <property name="useActualColumnNames" value="false" />
+-            <!-- 数据库表主键 -->
+-            <generatedKey column="id" sqlStatement="Mysql" identity="true" />
+-        </table>
+-    </context>
+-</generatorConfiguration>
+\ No newline at end of file
+Index: src/main/resources/mybatis-generator/mybatisGeneratorinit.properties
+===================================================================
+--- src/main/resources/mybatis-generator/mybatisGeneratorinit.properties	(revision 4d09ebac1568c9450d7400f16f808ce9ce8917bb)
++++ src/main/resources/mybatis-generator/mybatisGeneratorinit.properties	(revision 4d09ebac1568c9450d7400f16f808ce9ce8917bb)
+@@ -1,7 +0,0 @@
+-jdbc_driver=com.mysql.jdbc.Driver
+-jdbc_url=jdbc:mysql://localhost:3306/onecard?useUnicode=true&characterEncoding=utf-8&useSSL=true
+-jdbc_user=root
+-jdbc_password=root
+-models=C:\\idea\\backstage\\src\\main\\java
+-resources=C:\\idea\\backstage\\src\\main\\resources
+-dao=C:\\idea\\backstage\\src\\main\\java
+\ No newline at end of file
+Index: src/main/resources/mapper/CardMerchantsMapper.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\" \"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\r\n<mapper namespace=\"com.ykt.backstage.dao.CardMerchantsMapper\">\r\n  <cache type=\"com.ykt.backstage.common.config.MybatisRedisCache\">\r\n    <property name=\"eviction\" value=\"LRU\" />\r\n    <property name=\"flushInterval\" value=\"6000000\" />\r\n    <property name=\"size\" value=\"1024\" />\r\n    <property name=\"readOnly\" value=\"false\" />\r\n  </cache>\r\n  <resultMap id=\"BaseResultMap\" type=\"com.ykt.backstage.entity.CardMerchants\">\r\n    <!--\r\n      WARNING - @mbg.generated\r\n      This element is automatically generated by MyBatis Generator, do not modify.\r\n    -->\r\n    <id column=\"merchant_code\" jdbcType=\"VARCHAR\" property=\"merchantCode\" />\r\n    <result column=\"merchant_name\" jdbcType=\"VARCHAR\" property=\"merchantName\" />\r\n    <result column=\"location\" jdbcType=\"VARCHAR\" property=\"location\" />\r\n    <result column=\"created_at\" jdbcType=\"TIMESTAMP\" property=\"createdAt\" />\r\n    <result column=\"updated_at\" jdbcType=\"TIMESTAMP\" property=\"updatedAt\" />\r\n    <result column=\"brand_type\" jdbcType=\"CHAR\" property=\"brandType\" />\r\n    <result column=\"campus_location\" jdbcType=\"CHAR\" property=\"campusLocation\" />\r\n  </resultMap>\r\n  <delete id=\"deleteByPrimaryKey\" parameterType=\"java.lang.String\">\r\n    <!--\r\n      WARNING - @mbg.generated\r\n      This element is automatically generated by MyBatis Generator, do not modify.\r\n    -->\r\n    delete from card_merchants\r\n    where merchant_code = #{merchantCode,jdbcType=VARCHAR}\r\n  </delete>\r\n<!-- 这里要改 -->\r\n  <insert id=\"insert\" parameterType=\"com.ykt.backstage.entity.CardMerchants\">\r\n    <!--\r\n      WARNING - @mbg.generated\r\n      This element is automatically generated by MyBatis Generator, do not modify.\r\n    -->\r\n    insert into card_merchants (merchant_code, merchant_name, `location`, \r\n      created_at, updated_at, brand_type, \r\n      campus_location)\r\n    values (#{merchantCode,jdbcType=VARCHAR}, #{merchantName,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, \r\n      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, #{brandType,jdbcType=CHAR}, \r\n      #{campusLocation,jdbcType=CHAR})\r\n  </insert>\r\n\r\n  <update id=\"updateByPrimaryKey\" parameterType=\"com.ykt.backstage.entity.CardMerchants\">\r\n    <!--\r\n      WARNING - @mbg.generated\r\n      This element is automatically generated by MyBatis Generator, do not modify.\r\n    -->\r\n    update card_merchants\r\n    set merchant_name = #{merchantName,jdbcType=VARCHAR},\r\n      `location` = #{location,jdbcType=VARCHAR},\r\n      created_at = #{createdAt,jdbcType=TIMESTAMP},\r\n      updated_at = #{updatedAt,jdbcType=TIMESTAMP},\r\n      brand_type = #{brandType,jdbcType=CHAR},\r\n      campus_location = #{campusLocation,jdbcType=CHAR}\r\n    where merchant_code = #{merchantCode,jdbcType=VARCHAR}\r\n  </update>\r\n  <select id=\"selectByPrimaryKey\" parameterType=\"java.lang.String\" resultMap=\"BaseResultMap\">\r\n    <!--\r\n      WARNING - @mbg.generated\r\n      This element is automatically generated by MyBatis Generator, do not modify.\r\n    -->\r\n    select merchant_code, merchant_name, `location`, created_at, updated_at, brand_type, \r\n    campus_location\r\n    from card_merchants\r\n    where merchant_code = #{merchantCode,jdbcType=VARCHAR}\r\n  </select>\r\n  <select id=\"selectAll\" resultType=\"com.ykt.backstage.VO.CardMerchantsVO\">\r\n    <!--\r\n      WARNING - @mbg.generated\r\n      This element is automatically generated by MyBatis Generator, do not modify.\r\n    -->\r\n    select merchant_code, merchant_name as sjmc, `location` as sjwz,campus_location as fzr, created_at as zcsj\r\n    from card_merchants\r\n  </select>\r\n\r\n  <!-- 分页查询 -->\r\n  <select id=\"pageQuery\" resultMap=\"BaseResultMap\">\r\n    select *\r\n    from card_merchants\r\n    <bind name=\"offset\" value=\"(query.pn-1)*query.ps\"></bind>\r\n    limit #{offset},#{query.ps}\r\n  </select>\r\n</mapper>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/resources/mapper/CardMerchantsMapper.xml	(revision 4d09ebac1568c9450d7400f16f808ce9ce8917bb)
++++ src/main/resources/mapper/CardMerchantsMapper.xml	(date 1591274573157)
+@@ -15,8 +15,8 @@
+     <id column="merchant_code" jdbcType="VARCHAR" property="merchantCode" />
+     <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+     <result column="location" jdbcType="VARCHAR" property="location" />
+-    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+-    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
++    <result column="created_at" jdbcType="VARCHAR" property="createdAt" />
++    <result column="updated_at" jdbcType="VARCHAR" property="updatedAt" />
+     <result column="brand_type" jdbcType="CHAR" property="brandType" />
+     <result column="campus_location" jdbcType="CHAR" property="campusLocation" />
+   </resultMap>
